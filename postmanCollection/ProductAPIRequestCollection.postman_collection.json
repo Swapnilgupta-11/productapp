@@ -1,0 +1,340 @@
+{
+	"info": {
+		"_postman_id": "a747d9af-8168-4748-8cf3-4c52a8f9ec84",
+		"name": "ProductAPIRequestCollection",
+		"description": "This is a the complete API Requests Collection for the middlware Application!\n\n@JatinShharma",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Google",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.google.com",
+					"protocol": "https",
+					"host": [
+						"www",
+						"google",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LoginAPIRequest",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//JavaScript Variable\r",
+							"var emailAddress =\"jatinvsharma@gmail.com\";\r",
+							"console.log(\"Email ADdress\",emailAddress)\r",
+							"console.log(emailAddress)\r",
+							"var status = pm.globals.get(\"COLLECTIONRUNNER\");\r",
+							"console.log(status)\r",
+							"if(status == \"FALSE\")\r",
+							"{\r",
+							"pm.variables.set(\"emailAddress\",emailAddress); // PM local variable\r",
+							"pm.variables.set(\"password\",\"123123123\"); // PM local variable\r",
+							"}\r",
+							"else{\r",
+							"pm.variables.set(\"emailAddress\",pm.iterationData.get(\"userName\"));\r",
+							"pm.variables.set(\"password\",pm.iterationData.get(\"password\"));\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(\"In the test tab\")\r",
+							"var myResponse=pm.response.json()\r",
+							"\r",
+							"\r",
+							"// TEST\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify if the Json Response status is Success\",function(){\r",
+							"    var status = myResponse.status;\r",
+							"    //Assertion\r",
+							"    pm.expect(status).to.be.equals(\"success\",\"Verify if the Json Response status is Success\")\r",
+							"    pm.environment.set(\"TOKEN\",myResponse.data.token)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200)\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"email\": \"{{emailAddress}}\",\r\n\"password\": \"{{password}}\"\r\n\r\n}"
+				},
+				"url": {
+					"raw": "{{BASEURL}}/user/signin",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"user",
+						"signin"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "jatinvsharma@gmail.com",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "123123123",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddProductAPIRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseBody = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Verify if the add product response consist of success\", function(){\r",
+							"    pm.expect(responseBody.status).to.be.equal(\"success\")\r",
+							"})\r",
+							"\r",
+							"pm.expect(\"Verify if the prod id is non zero\",function(){\r",
+							"    var prodId = responseBody.data.id;\r",
+							"    pm.expect(prodId).to.be.greaterThan(0); //Matchers Hamcrest BDD\r",
+							"    pm.environment.set(\"PRODID\",prodId); \r",
+							"\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"var status = pm.globals.get(\"COLLECTIONRUNNER\");\r",
+							"console.log(status)\r",
+							"if(status == \"FALSE\"){\r",
+							"    pm.variables.set(\"prodName\",\"ABC\");\r",
+							"pm.variables.set(\"prodDesc\",\"PQR\");\r",
+							"pm.variables.set(\"prodPrice\",\"3454\");\r",
+							"}\r",
+							"\r",
+							"else{\r",
+							"pm.variables.set(\"prodName\",pm.iterationData.get(\"prodName\"));\r",
+							"pm.variables.set(\"prodDesc\",pm.iterationData.get(\"prodDesc\"));\r",
+							"pm.variables.set(\"prodPrice\",pm.iterationData.get(\"prodPrice\"));\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n\"prod_name\": \"{{prodName}}\",\r\n\"prod_desc\": \"{{prodDesc}}\",\r\n\"prod_price\": \"{{prodPrice}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{BASEURL}}/api/v1/products",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateProdDetails",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"var status = pm.globals.get(\"COLLECTIONRUNNER\");\r",
+							"console.log(status)\r",
+							"if(status == \"FALSE\"){\r",
+							"    pm.variables.set(\"prodName\",\"ABC\");\r",
+							"pm.variables.set(\"prodDesc\",\"PQR\");\r",
+							"pm.variables.set(\"prodPrice\",\"3454\");\r",
+							"}\r",
+							"\r",
+							"else{\r",
+							"pm.variables.set(\"prodName\",pm.iterationData.get(\"prodName\"));\r",
+							"pm.variables.set(\"prodDesc\",pm.iterationData.get(\"prodDesc\"));\r",
+							"pm.variables.set(\"prodPrice\",pm.iterationData.get(\"prodPrice\"));\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n\"prod_name\": \"{{updateProdName}}\",\r\n\"prod_desc\": \"{{updateProdDesc}}\",\r\n\"prod_price\": \"{{updateProdPrice}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{BASEURL}}/api/v1/products/{{PRODID}}",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"{{PRODID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetProductDetailsById",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{BASEURL}}/api/v1/products/{{PRODID}}",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"{{PRODID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{TOKEN}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BASEURL}}/api/v1/products/{{PRODID}}",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"{{PRODID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

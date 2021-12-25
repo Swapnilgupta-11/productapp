@@ -1,0 +1,24 @@
+{
+  "development": {
+   "username": "produser",
+    "password": "qweQWe123!",
+    "database": "jobs_prod",
+    "host": "139.59.91.96",
+    "dialect": "mysql"
+  },
+  "test": {
+   "username": "produser",
+    "password": "qweQWe123!",
+    "database": "jobs_prod",
+    "host": "139.59.91.96",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "produser",
+    "password": "qweQWe123!",
+    "database": "jobs_prod",
+    "host": "139.59.91.96",
+    "dialect": "mysql"
+  }
+}
+

@@ -1,0 +1,265 @@
+{
+	"info": {
+		"_postman_id": "be4cca0b-13b9-42af-951b-2ac70a20f521",
+		"name": "testDataAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "SignIn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var token1 = JSON.parse(responseBody);\r",
+							"pm.environment.set(\"ETOKEN\", token1.data.token);\r",
+							"console.log(\"Token\",token1.data.token);\r",
+							"// pm.test(\"Status code is 200\", function () {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//var emailaddress=\"jatinvsharma@gmail.com\";\r",
+							" //var password=\"123123123\";\r",
+							" \r",
+							"//console.log(\"Email address\", emailaddress);\r",
+							" //pm.variables.set(\"email_address\",\"jatinvsharma@gmail.com\");\r",
+							"\r",
+							"//pm.variables.set(\"password\",\"123123123\");\r",
+							" pm.variables.set(\"emailaddress\",pm.iterationData.get(\"username\"));\r",
+							" pm.variables.set(\"password\",pm.iterationData.get(\"password\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n\"email\": \"{{emailaddress}}\",\r\n\r\n\"password\": \"{{password}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASEURL}}/user/signin",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"user",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddProductByTestData",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var prodID = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.environment.set(\"PROID\", prodID.data.id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set(\"prodname\",pm.iterationData.get(\"prodname\"));\r",
+							" pm.variables.set(\"proddesc\",pm.iterationData.get(\"proddesc\"));\r",
+							" pm.variables.set(\"prodprice\",pm.iterationData.get(\"prodprice\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true,
+					"accept": true,
+					"accept-encoding": true,
+					"connection": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ETOKEN}}",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n\"prod_name\": \"{{prodname}}\",\r\n\r\n\"prod_desc\": \"{{proddesc}}\",\r\n\r\n\"prod_price\":\"{{prodprice}}\"\r\n\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASEURL}}/api/v1/products",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateProductAPIbyTestData",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.variables.set(\"prodnameupdate\",pm.iterationData.get(\"prodnameupdate\"));\r",
+							" pm.variables.set(\"proddescupdate\",pm.iterationData.get(\"proddescupdate\"));\r",
+							" pm.variables.set(\"prodpriceupdate\",pm.iterationData.get(\"prodpriceupdate\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-TypeA",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{ETOKEN}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"prod_name\": \"{{prodnameupdate}}\",\r\n\r\n\"prod_desc\": \"{{proddescupdate}}\",\r\n\r\n\"prod_price\": \"{{prodpriceupdate}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASEURL}}/api/v1/products/{{PROID}}",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"{{PROID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetProductAPI",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ETOKEN}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASEURL}}/api/v1/products/{{PROID}}",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"{{PROID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

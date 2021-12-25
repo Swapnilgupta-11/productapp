@@ -1,0 +1,64 @@
+pipeline{
+  agent {
+      node{
+          label 'DEV'
+        }
+  }
+
+
+stages{
+
+  stage("Stop the application")
+  {
+    steps{
+      echo "Stopping the application...."
+      sh 'pm2 stop prodApp'
+    }
+  }
+
+ stage("Installation of lib")
+  {
+    steps{
+      echo "npm installation"
+      sh'npm install'
+    }
+  }
+
+   stage("Starting of application")
+  {
+    steps{
+      echo "Starting of the  application...."
+      sh 'pm2 start npm --name "prodApp" -- start'
+    }
+  }
+
+
+
+   stage("Run my Postman Tests")
+  {
+    
+      steps{
+      echo "Starting of the  application....(Sanity Tests)"
+      sh 'cd postmanCollection'
+      dir("postmanCollection") {
+      sh 'ls'
+      sh ' newman run ProductAPIRequestCollection.postman_collection.json -e DEV.postman_environment.json -d testData.csv -g AT_Aug_2021.postman_globals.json -r cli,html'
+     
+    }
+  }
+  }
+}
+
+ post { 
+       always {
+ 
+      emailext attachLog: true, attachmentsPattern: 'postmanCollection/newman/*.html',body: '''Please find attached the report the same.
+
+''', subject: 'Status for the Build', to: 'jatinvsharma@gmail.com'
+  
+    }
+
+    
+  }
+
+}

@@ -1,0 +1,6 @@
+{
+  "secretKey": "fuckingKey",
+  "inactiveTimeFrame": 3600,
+  "forceExpireTimeFrame": 86400,
+  "saltRounds": 10
+}

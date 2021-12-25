@@ -1,0 +1,56 @@
+pipeline{ //start
+agent{
+
+node{
+    label :'DEV'
+}
+}
+
+stages{
+
+stage("Stop of the application")
+{
+steps{
+    sh 'pm2 stop prodAPP'
+}
+}
+
+stage("Installation")
+{
+    steps{
+  sh 'npm install'  
+}
+
+}
+
+stage("Start the application")
+{steps{
+    sh 'pm2 start --name prodAPP npm -- start '
+}
+}
+stage("Run Postman Test")
+{
+step{
+
+ dir('postmanCollection'){
+     sh 'newman run ......'
+ }
+ 
+}
+   
+}
+
+
+}
+
+post{
+    always{
+
+    }
+}
+
+
+
+
+
+}//end

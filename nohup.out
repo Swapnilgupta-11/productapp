@@ -1,0 +1,7 @@
+
+STARTING in  mode
+
+[PM2] Spawning PM2 daemon with pm2_home=/root/.pm2
+[PM2] PM2 Successfully daemonized
+[PM2][Module] Installing NPM pm2-logrotate module
+[PM2][Module] Calling [NPM] to install pm2-logrotate ...
